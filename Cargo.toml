@@ -10,6 +10,7 @@ keywords = ["envvar", "shell", "bash", "environment"]
 categories = ["config", "os"]
 repository = "https://github.com/esrlabs/envvars.git"
 homepage = "https://github.com/esrlabs/envvars"
+readme = "README.md"
 exclude = [
     "scripts/*",
     "rakefile.rb",
