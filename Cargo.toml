@@ -8,8 +8,8 @@ license = "Apache-2.0"
 build = "build/mod.rs"
 keywords = ["envvar", "shell", "bash", "environment"]
 categories = ["config", "os"]
-repository = "https://github.com/DmitryAstafyev/envvars.git"
-homepage = "https://github.com/DmitryAstafyev/envvars"
+repository = "https://github.com/esrlabs/envvars.git"
+homepage = "https://github.com/esrlabs/envvars"
 exclude = [
     "scripts/*",
     "rakefile.rb",
