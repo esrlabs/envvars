@@ -1,0 +1,56 @@
+name: Lint
+
+on:
+    push:
+        branches:
+            - master # Push events on master branch
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: install ruby
+              uses: ruby/setup-ruby@v1
+              with:
+                  ruby-version: "3.0"
+                  bundler-cache: true
+            - name: install ruby:gem::dotenv
+              run: gem install dotenv
+            - name: install ruby:gem::json
+              run: gem install json
+            - uses: actions-rs/toolchain@v1
+              with:
+                  toolchain: stable
+                  override: true
+            - name: Rust linting
+              working-directory: ./
+              run: rake clippy:envvars
+    tests:
+        name: Cross-platform tests
+        needs: lint
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: [ubuntu-latest, windows-latest, macOS-latest]
+                rust: [stable]
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: install ruby
+              uses: ruby/setup-ruby@v1
+              with:
+                  ruby-version: "3.0"
+                  bundler-cache: true
+            - name: install ruby:gem::dotenv
+              run: gem install dotenv
+            - name: install ruby:gem::json
+              run: gem install json
+            - name: install rust
+              uses: hecrj/setup-rust-action@v1
+              with:
+                  rust-version: ${{ matrix.rust }}
+            - name: Run tests
+              working-directory: ./
+              run: rake test:envvars

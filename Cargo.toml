@@ -1,0 +1,41 @@
+[package]
+name = "envvars"
+version = "0.1.0"
+edition = "2021"
+authors = ["d.astafyev@outlook.com"]
+description = "Getting environment variables considering shell configuration"
+license = "Apache-2.0"
+build = "build/mod.rs"
+keywords = ["envvar", "shell", "bash", "environment"]
+categories = ["config", "os"]
+repository = "https://github.com/DmitryAstafyev/envvars.git"
+homepage = "https://github.com/DmitryAstafyev/envvars"
+exclude = [
+    "scripts/*",
+    "rakefile.rb",
+    ".github/*",
+    ".gitignore"
+]
+
+[lib]
+name = "envvars"
+path = "src/lib.rs"
+
+[dependencies]
+serde = { version = "^1.0", features = ["derive"] }
+serde_json = "^1.0"
+log = "^0.4"
+home = "^0.5"
+lazy_static = "^1.4"
+thiserror = "^1.0"
+blake3 = "^1.3"
+
+[build-dependencies]
+blake3 = "^1.3"
+uuid = { version = "^1.3", features = ["v4"] }
+fs_extra = "^1.3"
+lazy_static = "^1.4"
+
+[profile.release]
+strip = true 
+opt-level = "z"  # Optimize for size.
