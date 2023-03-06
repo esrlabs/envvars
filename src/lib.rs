@@ -7,7 +7,7 @@
 //! shell
 //! - loading a list of environment variables for selected or each shell
 //!
-//! # Usage
+//! ## Usage
 //!
 //! Getting all available (detected) shells and related to each shell list of
 //! environment variables
@@ -45,13 +45,14 @@
 //! ```
 //!
 //! ## Diffrence from `std::env::vars`
+//!
 //! `envvars` actually executes each found `shell` it means: all settings of the target
 //! shell will be inited before a list of environment variables will be requested. That's
 //! very sensitive if the configuration of some shell includes some initialization script,
 //! which affects environment variables. That means in some cases `std::env::vars` and
 //! `envvars` could give different results.
 //!  
-//! # How it works
+//! ## How it works
 //!
 //! Under the hood, `envvars` takes each shell, and executes it with a command,
 //! which posts a list of environment variables to `stdout`. As soon as executing
@@ -73,9 +74,11 @@
 //! `envars` will remove a corrupted file and create a new one.
 //!  
 //! ## Unix specific
+//!
 //! `envvars` reads `/etc/shells` and analyze each shell from a list
 //!
 //! ## Windows specific
+//!
 //! `envvars` checks for availability next shells:
 //! - Command Prompt
 //! - Windows PowerShell
@@ -86,6 +89,7 @@
 //! - GitBash
 //!
 //! ## Guaranteed results
+//!
 //! Because `envvars` tries to initialize each shell and "drop" a list of environment
 //! variables to `stdout`, the shell should support the possibility to put a command as
 //! an argument, for example: `/bin/bash -c path_to_command`. Obviously not many, but
