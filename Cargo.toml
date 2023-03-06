@@ -1,6 +1,6 @@
 [package]
 name = "envvars"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 authors = ["d.astafyev@outlook.com"]
 description = "Getting environment variables considering shell configuration"

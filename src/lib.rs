@@ -7,6 +7,52 @@
 //! shell
 //! - loading a list of environment variables for selected or each shell
 //!
+//! # Usage
+//!
+//! Getting all available (detected) shells and related to each shell list of
+//! environment variables
+//!
+//! ```
+//! use envvars::{get_profiles, Profile};
+//!
+//! let mut profiles: Vec<Profile> = get_profiles().unwrap();
+//!
+//! // By default profile doesn't have loaded list of environment variables.
+//! // It should be loaded calling method load().
+//! profiles.iter_mut().for_each(|profile| {
+//!     // Attempt to load envvars
+//!     if let Err(err) = profile.load() {
+//!         eprintln!("Cannot load envvars for {}: {err}", profile.name);
+//!     }
+//!     if let Some(envvars) = &profile.envvars {
+//!         println!("Environment variables for {}", profile.name);
+//!         envvars.iter().for_each(|(key, value)| {
+//!             println!("{key}: {value}");
+//!         });
+//!     }
+//! });
+//! ```
+//!
+//! Extract environment variables without shell context.
+//!
+//! ```
+//! use std::collections::HashMap;
+//! use envvars::get_context_envvars;
+//!
+//! let vars: HashMap<String, String> = get_context_envvars().unwrap();
+//!
+//! assert!(vars.contains_key("PATH") || vars.contains_key("Path") || vars.contains_key("path"));
+//! ```
+//!
+//! ## Diffrence from `std::env::vars`
+//! `envvars` actually executes each found `shell` it means: all settings of the target
+//! shell will be inited before a list of environment variables will be requested. That's
+//! very sensitive if the configuration of some shell includes some initialization script,
+//! which affects environment variables. That means in some cases `std::env::vars` and
+//! `envvars` could give different results.
+//!  
+//! # How it works
+//!
 //! Under the hood, `envvars` takes each shell, and executes it with a command,
 //! which posts a list of environment variables to `stdout`. As soon as executing
 //! is done, `envvars` reads `stdout` and parse environment variables into
@@ -47,12 +93,6 @@
 //! still can use `get_context_envvars()` to get a list of environment variables without
 //! the shell's context.
 //!
-//! ## Diffrence from `std::env::vars`
-//! `envvars` actually executes each found `shell` it means: all settings of the target
-//! shell will be inited before a list of environment variables will be requested. That's
-//! very sensitive if the configuration of some shell includes some initialization script,
-//! which affects environment variables. That means in some cases `std::env::vars` and
-//! `envvars` could give different results.
 
 #[macro_use]
 extern crate lazy_static;
