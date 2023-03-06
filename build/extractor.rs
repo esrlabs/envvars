@@ -1,6 +1,7 @@
 use super::paths;
 use fs_extra::dir;
 use std::{
+    env,
     fs::rename,
     io::{Error, ErrorKind},
     process::Command,
@@ -27,7 +28,12 @@ pub fn copy_sources() -> Result<(), Error> {
 pub fn build() -> Result<(), Error> {
     let dest = paths::extractor_dest_dir()?.join("extractor");
     let output = Command::new("cargo")
-        .args(["build", "--release"])
+        .args([
+            "build",
+            "--release",
+            "--target-dir",
+            &dest.join("target").to_string_lossy(),
+        ])
         .current_dir(&dest)
         .output()?;
     if !output.status.success() {
@@ -54,6 +60,14 @@ pub fn build() -> Result<(), Error> {
             "Extractor debug folder: {}",
             paths::ls(&dest.join("target").join("debug"))
         );
+        if let Ok(output) = paths::cargo_output_dir() {
+            println!("Cargo OUTPUT folder {output:?}: {}", paths::ls(&output));
+        }
+        println!(
+            "CARGO_BUILD_TARGET_DIR: {:?}",
+            env::var_os("CARGO_BUILD_TARGET_DIR")
+        );
+        println!("CARGO_TARGET_DIR: {:?}", env::var_os("CARGO_TARGET_DIR"));
         Ok(())
     }
 }
