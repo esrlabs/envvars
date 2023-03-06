@@ -1,3 +1,8 @@
+//! # extractor
+//!
+//! `extractor` is a part of crate `envvars`. This mini-application is used to
+//! drop a list of environment variables into stdout and does nothing else.
+
 use std::env;
 
 const KEY_VALUE_SEP: &str = include_str!("./keys/key_value_sep.txt");
