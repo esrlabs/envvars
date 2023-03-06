@@ -1,4 +1,4 @@
-use crate::{assets, checksum::checksum, Error};
+use crate::{assets, checksum::checksum, decoder, Error};
 use std::{
     collections::HashMap,
     env::temp_dir,
@@ -128,9 +128,9 @@ impl Extractor {
         let output = self.output(shell, args).map_err(Error::Executing)?;
         let stdout = from_utf8(&output.stdout).map_err(Error::Decoding)?;
         let stderr = from_utf8(&output.stderr).map_err(Error::Decoding)?;
-        serde_json::from_str::<HashMap<String, String>>(stdout).map_err(|e| {
+        decoder::decode(stdout).map_err(|e| {
             Error::Parsing(
-                e,
+                e.to_string(),
                 output.status.code(),
                 stdout.to_owned(),
                 stderr.to_owned(),

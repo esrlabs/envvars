@@ -1,13 +1,12 @@
 [package]
 name = "extractor"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["d.astafyev@outlook.com"]
+description = "Extractor is used by crate envvars"
+license = "Apache-2.0"
+repository = "https://github.com/esrlabs/envvars.git"
 
 [profile.release]
 strip = true 
 opt-level = "z"  # Optimize for size.
-
-[dependencies]
-serde_json = "1.0.93"
