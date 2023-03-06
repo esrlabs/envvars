@@ -28,7 +28,7 @@ pub fn build() -> Result<(), Error> {
     let dest = paths::extractor_dest_dir()?.join("extractor");
     let output = Command::new("cargo")
         .args(["build", "--release"])
-        .current_dir(dest)
+        .current_dir(&dest)
         .output()?;
     if !output.status.success() {
         Err(Error::new(
@@ -40,6 +40,7 @@ pub fn build() -> Result<(), Error> {
             ),
         ))
     } else {
+        println!("Build {dest:?} is done");
         Ok(())
     }
 }

@@ -1,6 +1,6 @@
 use std::{
     env,
-    fs::create_dir,
+    fs::{create_dir, read_dir},
     io::{Error, ErrorKind},
     path::{Path, PathBuf},
 };
@@ -13,9 +13,30 @@ lazy_static! {
 
 fn if_exist(path: PathBuf) -> Result<PathBuf, Error> {
     if !path.exists() {
+        let ls = if let Some(parent) = path.parent() {
+            if parent.exists() {
+                if let Ok(inner) = read_dir(parent) {
+                    format!(
+                        "\n{}",
+                        inner
+                            .map(|entry| {
+                                entry.map_or(String::new(), |entry| format!("{:?}", entry.path()))
+                            })
+                            .collect::<Vec<String>>()
+                            .join("\n")
+                    )
+                } else {
+                    format!("Fail to read content of {parent:?}")
+                }
+            } else {
+                format!("{parent:?} doesn't exist")
+            }
+        } else {
+            "path doesn't have parent".to_string()
+        };
         return Err(Error::new(
             ErrorKind::NotFound,
-            format!("{path:?} doesn't exist"),
+            format!("{path:?} doesn't exist. List: {ls}"),
         ));
     }
     Ok(path)
