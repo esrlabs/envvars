@@ -1,6 +1,6 @@
 [package]
 name = "extractor"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["d.astafyev@outlook.com"]
 description = "Extractor is used by crate envvars"

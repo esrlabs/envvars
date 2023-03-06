@@ -11,32 +11,38 @@ lazy_static! {
     pub static ref TEMP_DIR: String = Uuid::new_v4().to_string();
 }
 
+pub fn ls_parent(path: &Path) -> String {
+    if let Some(parent) = path.parent() {
+        ls(parent)
+    } else {
+        "path doesn't have parent".to_string()
+    }
+}
+pub fn ls(path: &Path) -> String {
+    if path.exists() {
+        if let Ok(inner) = read_dir(path) {
+            format!(
+                "\n{}",
+                inner
+                    .map(|entry| {
+                        entry.map_or(String::new(), |entry| format!("{:?}", entry.path()))
+                    })
+                    .collect::<Vec<String>>()
+                    .join("\n")
+            )
+        } else {
+            format!("Fail to read content of {path:?}")
+        }
+    } else {
+        format!("{path:?} doesn't exist")
+    }
+}
+
 fn if_exist(path: PathBuf) -> Result<PathBuf, Error> {
     if !path.exists() {
-        let ls = if let Some(parent) = path.parent() {
-            if parent.exists() {
-                if let Ok(inner) = read_dir(parent) {
-                    format!(
-                        "\n{}",
-                        inner
-                            .map(|entry| {
-                                entry.map_or(String::new(), |entry| format!("{:?}", entry.path()))
-                            })
-                            .collect::<Vec<String>>()
-                            .join("\n")
-                    )
-                } else {
-                    format!("Fail to read content of {parent:?}")
-                }
-            } else {
-                format!("{parent:?} doesn't exist")
-            }
-        } else {
-            "path doesn't have parent".to_string()
-        };
         return Err(Error::new(
             ErrorKind::NotFound,
-            format!("{path:?} doesn't exist. List: {ls}"),
+            format!("{path:?} doesn't exist. List: {}", ls_parent(&path)),
         ));
     }
     Ok(path)

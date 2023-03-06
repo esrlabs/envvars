@@ -41,6 +41,19 @@ pub fn build() -> Result<(), Error> {
         ))
     } else {
         println!("Build {dest:?} is done");
+        println!("Extractor folder: {}", paths::ls(&dest));
+        println!(
+            "Extractor target folder: {}",
+            paths::ls(&dest.join("target"))
+        );
+        println!(
+            "Extractor release folder: {}",
+            paths::ls(&dest.join("target").join("release"))
+        );
+        println!(
+            "Extractor debug folder: {}",
+            paths::ls(&dest.join("target").join("debug"))
+        );
         Ok(())
     }
 }
