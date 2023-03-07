@@ -9,9 +9,10 @@
 
 Getting all available (detected) shells and related to each shell list of environment variables
 
-```
+``` Rust
 use envvars::{get_profiles, Profile};
 
+// ...
 let mut profiles: Vec<Profile> = get_profiles().unwrap();
 
 // By default profile doesn't have loaded list of environment variables.
@@ -32,10 +33,11 @@ profiles.iter_mut().for_each(|profile| {
 
 Extract environment variables without shell context.
 
-```
+``` Rust
 use std::collections::HashMap;
 use envvars::get_context_envvars;
 
+// ...
 let vars: HashMap<String, String> = get_context_envvars().unwrap();
 
 assert!(vars.contains_key("PATH") || vars.contains_key("Path") || vars.contains_key("path"));
