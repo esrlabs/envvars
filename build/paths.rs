@@ -6,9 +6,23 @@ use std::{
 };
 use uuid::Uuid;
 
+const PREDEFINED_TEMP_DIR: &str = "ENVVARS_CRATE_EXTRACTOR_TEMP_DIR";
+
 lazy_static! {
-    #[doc(hidden)]
-    pub static ref TEMP_DIR: String = Uuid::new_v4().to_string();
+    static ref TEMP_DIR: String = Uuid::new_v4().to_string();
+}
+
+pub fn is_predefined_location_used() -> bool {
+    env::var_os(PREDEFINED_TEMP_DIR).is_some()
+}
+
+fn get_temp_dir() -> String {
+    if let Some(v) = env::var_os(PREDEFINED_TEMP_DIR) {
+        println!("{PREDEFINED_TEMP_DIR} has been detected: {:?}", v);
+        v.to_string_lossy().to_string()
+    } else {
+        TEMP_DIR.clone()
+    }
 }
 
 pub fn ls_parent(path: &Path) -> String {
@@ -64,7 +78,7 @@ pub fn extractor_src_dir() -> Result<PathBuf, Error> {
 }
 
 pub fn extractor_dest_dir() -> Result<PathBuf, Error> {
-    let path = env::temp_dir().join(TEMP_DIR.as_str());
+    let path = env::temp_dir().join(get_temp_dir().as_str());
     if !path.exists() {
         create_dir(&path)?;
     }

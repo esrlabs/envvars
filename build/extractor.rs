@@ -8,7 +8,14 @@ use std::{
     str::from_utf8,
 };
 
+fn skip() -> bool {
+    paths::is_predefined_location_used() && paths::extractor_executable().is_ok()
+}
+
 pub fn copy_sources() -> Result<(), Error> {
+    if skip() {
+        return Ok(());
+    }
     let src = paths::extractor_src_dir()?;
     let dest = paths::extractor_dest_dir()?;
     let extractor = dest.join("extractor");
@@ -26,6 +33,9 @@ pub fn copy_sources() -> Result<(), Error> {
 }
 
 pub fn build() -> Result<(), Error> {
+    if skip() {
+        return Ok(());
+    }
     let dest = paths::extractor_dest_dir()?.join("extractor");
     let output = Command::new("cargo")
         .args([
