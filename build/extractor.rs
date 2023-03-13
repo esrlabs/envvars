@@ -4,6 +4,7 @@ use std::{
     env,
     fs::rename,
     io::{Error, ErrorKind},
+    path::PathBuf,
     process::Command,
     str::from_utf8,
 };
@@ -12,8 +13,34 @@ fn skip() -> bool {
     paths::is_predefined_location_used() && paths::extractor_executable().is_ok()
 }
 
+fn report(dest: &PathBuf) {
+    println!("Build {dest:?} is done");
+    println!("Extractor folder: {}", paths::ls(dest));
+    println!(
+        "Extractor target folder: {}",
+        paths::ls(&dest.join("target"))
+    );
+    println!(
+        "Extractor release folder: {}",
+        paths::ls(&dest.join("target").join("release"))
+    );
+    println!(
+        "Extractor debug folder: {}",
+        paths::ls(&dest.join("target").join("debug"))
+    );
+    if let Ok(output) = paths::cargo_output_dir() {
+        println!("Cargo OUTPUT folder {output:?}: {}", paths::ls(&output));
+    }
+    println!(
+        "CARGO_BUILD_TARGET_DIR: {:?}",
+        env::var_os("CARGO_BUILD_TARGET_DIR")
+    );
+    println!("CARGO_TARGET_DIR: {:?}", env::var_os("CARGO_TARGET_DIR"));
+}
+
 pub fn copy_sources() -> Result<(), Error> {
     if skip() {
+        println!("Copying of source is skipped. Sources already exist");
         return Ok(());
     }
     let src = paths::extractor_src_dir()?;
@@ -33,10 +60,12 @@ pub fn copy_sources() -> Result<(), Error> {
 }
 
 pub fn build() -> Result<(), Error> {
+    let dest = paths::extractor_dest_dir()?.join("extractor");
     if skip() {
+        println!("Building is skipped. Extractor already exist");
+        report(&dest);
         return Ok(());
     }
-    let dest = paths::extractor_dest_dir()?.join("extractor");
     let output = Command::new("cargo")
         .args([
             "build",
@@ -56,28 +85,7 @@ pub fn build() -> Result<(), Error> {
             ),
         ))
     } else {
-        println!("Build {dest:?} is done");
-        println!("Extractor folder: {}", paths::ls(&dest));
-        println!(
-            "Extractor target folder: {}",
-            paths::ls(&dest.join("target"))
-        );
-        println!(
-            "Extractor release folder: {}",
-            paths::ls(&dest.join("target").join("release"))
-        );
-        println!(
-            "Extractor debug folder: {}",
-            paths::ls(&dest.join("target").join("debug"))
-        );
-        if let Ok(output) = paths::cargo_output_dir() {
-            println!("Cargo OUTPUT folder {output:?}: {}", paths::ls(&output));
-        }
-        println!(
-            "CARGO_BUILD_TARGET_DIR: {:?}",
-            env::var_os("CARGO_BUILD_TARGET_DIR")
-        );
-        println!("CARGO_TARGET_DIR: {:?}", env::var_os("CARGO_TARGET_DIR"));
+        report(&dest);
         Ok(())
     }
 }
