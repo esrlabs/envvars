@@ -1,4 +1,4 @@
-use super::paths;
+use super::{cargo_log, paths};
 use fs_extra::dir;
 use std::{
     env,
@@ -14,33 +14,33 @@ fn skip() -> bool {
 }
 
 fn report(dest: &PathBuf) {
-    println!("Build {dest:?} is done");
-    println!("Extractor folder: {}", paths::ls(dest));
-    println!(
+    cargo_log!("Build {dest:?} is done");
+    cargo_log!("Extractor folder: {}", paths::ls(dest));
+    cargo_log!(
         "Extractor target folder: {}",
         paths::ls(&dest.join("target"))
     );
-    println!(
+    cargo_log!(
         "Extractor release folder: {}",
         paths::ls(&dest.join("target").join("release"))
     );
-    println!(
+    cargo_log!(
         "Extractor debug folder: {}",
         paths::ls(&dest.join("target").join("debug"))
     );
     if let Ok(output) = paths::cargo_output_dir() {
-        println!("Cargo OUTPUT folder {output:?}: {}", paths::ls(&output));
+        cargo_log!("Cargo OUTPUT folder {output:?}: {}", paths::ls(&output));
     }
-    println!(
+    cargo_log!(
         "CARGO_BUILD_TARGET_DIR: {:?}",
         env::var_os("CARGO_BUILD_TARGET_DIR")
     );
-    println!("CARGO_TARGET_DIR: {:?}", env::var_os("CARGO_TARGET_DIR"));
+    cargo_log!("CARGO_TARGET_DIR: {:?}", env::var_os("CARGO_TARGET_DIR"));
 }
 
 pub fn copy_sources() -> Result<(), Error> {
     if skip() {
-        println!("Copying of source is skipped. Sources already exist");
+        cargo_log!("Copying of source is skipped. Sources already exist");
         return Ok(());
     }
     let src = paths::extractor_src_dir()?;
@@ -62,7 +62,7 @@ pub fn copy_sources() -> Result<(), Error> {
 pub fn build() -> Result<(), Error> {
     let dest = paths::extractor_dest_dir()?.join("extractor");
     if skip() {
-        println!("Building is skipped. Extractor already exist");
+        cargo_log!("Building is skipped. Extractor already exist");
         report(&dest);
         return Ok(());
     }

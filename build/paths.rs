@@ -1,3 +1,4 @@
+use super::cargo_log;
 use std::{
     env,
     fs::{create_dir, read_dir},
@@ -18,7 +19,7 @@ pub fn is_predefined_location_used() -> bool {
 
 fn get_temp_dir() -> String {
     if let Some(v) = env::var_os(PREDEFINED_TEMP_DIR) {
-        println!("{PREDEFINED_TEMP_DIR} has been detected: {:?}", v);
+        cargo_log!("{PREDEFINED_TEMP_DIR} has been detected: {:?}", v);
         v.to_string_lossy().to_string()
     } else {
         TEMP_DIR.clone()
