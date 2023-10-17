@@ -12,6 +12,7 @@ pub(crate) fn get() -> Result<Vec<Profile>, Error> {
     for shell in read_to_string(shells_file_path)
         .map_err(Error::Io)?
         .split('\n')
+        .filter(|s| !s.starts_with('#') && !s.is_empty())
     {
         let path = Path::new(shell);
         let profile = match Profile::new(&path.to_path_buf(), vec!["-c"], None) {
