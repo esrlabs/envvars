@@ -15,7 +15,15 @@ pub(crate) fn get() -> Result<Vec<Profile>, Error> {
         .filter(|s| !s.starts_with('#') && !s.is_empty())
     {
         let path = Path::new(shell);
-        let profile = match Profile::new(&path.to_path_buf(), vec!["-c"], None) {
+        let profile = match Profile::new(
+            &path.to_path_buf(),
+            if path.ends_with("tcsh") || path.ends_with("csh") {
+                vec!["-ic"]
+            } else {
+                vec!["-i", "-l", "-c"]
+            },
+            None,
+        ) {
             Ok(profile) => profile,
             Err(err) => {
                 log::warn!("Cannot get envvars for {shell}: {err}");
