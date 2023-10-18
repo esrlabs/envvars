@@ -60,7 +60,7 @@ impl Extractor {
 
     fn delivery(&mut self) -> Result<(), io::Error> {
         if self.location.exists() {
-            log::warn!(
+            log::info!(
                 "Extractor {:?} already exists. Checking checksum.",
                 self.location
             );
