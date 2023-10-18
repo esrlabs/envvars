@@ -18,9 +18,9 @@ pub(crate) fn get() -> Result<Vec<Profile>, Error> {
         let profile = match Profile::new(
             &path.to_path_buf(),
             if path.ends_with("tcsh") || path.ends_with("csh") {
-                vec!["-ic"]
+                vec!["-c"]
             } else {
-                vec!["-i", "-l", "-c"]
+                vec!["-l", "-c"]
             },
             None,
         ) {
