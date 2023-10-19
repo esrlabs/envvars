@@ -1,4 +1,5 @@
 use crate::{profiles::Profile, Error};
+use is_terminal::IsTerminal;
 use std::{fs::read_to_string, path::Path};
 
 const SHELLS_FILE_PATH: &str = "/etc/shells";
@@ -15,12 +16,23 @@ pub(crate) fn get() -> Result<Vec<Profile>, Error> {
         .filter(|s| !s.starts_with('#') && !s.is_empty())
     {
         let path = Path::new(shell);
+        let is_term = std::io::stdout().is_terminal();
         let profile = match Profile::new(
             &path.to_path_buf(),
             if path.ends_with("tcsh") || path.ends_with("csh") {
-                vec!["-c"]
+                if is_term {
+                    vec!["-c"]
+                } else {
+                    vec!["-ic"]
+                }
             } else {
-                vec!["-l", "-c"]
+                if is_term {
+                    log::warn!("TTY detected");
+                    vec!["-l", "-c"]
+                } else {
+                    log::warn!("no TTY");
+                    vec!["-i", "-l", "-c"]
+                }
             },
             None,
         ) {
