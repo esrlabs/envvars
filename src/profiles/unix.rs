@@ -27,10 +27,10 @@ pub(crate) fn get() -> Result<Vec<Profile>, Error> {
                 }
             } else {
                 if is_term {
-                    log::warn!("TTY detected");
+                    log::info!("TTY detected");
                     vec!["-l", "-c"]
                 } else {
-                    log::warn!("no TTY");
+                    log::info!("no TTY");
                     vec!["-i", "-l", "-c"]
                 }
             },
