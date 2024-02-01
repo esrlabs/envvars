@@ -1,3 +1,4 @@
+#![windows_subsystem = "windows"]
 //! # extractor
 //!
 //! `extractor` is a part of crate `envvars`. This mini-application is used to
