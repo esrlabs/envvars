@@ -47,6 +47,7 @@ impl Extractor {
             .read(true)
             .write(true)
             .create(true)
+            .truncate(true)
             .open(&self.location)
     }
     #[cfg(windows)]
