@@ -4,7 +4,7 @@
 //! variables. If works in two steps:
 //!
 //! - detecting a list of available shells and creating `Profile` for each found
-//! shell
+//!   shell
 //! - loading a list of environment variables for selected or each shell
 //!
 //! ## Usage
