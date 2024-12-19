@@ -1,5 +1,5 @@
 use crate::{Error, EXTRACTOR};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
     fs,
@@ -10,7 +10,7 @@ pub mod unix;
 pub mod windows;
 
 /// Definition of shell profile
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Profile {
     /// Suggested name of shell. For unix based systems it will be name of executable file,
     /// like "bash", "fish" etc. For windows it will be names like "GitBash", "PowerShell"
@@ -33,10 +33,10 @@ impl Profile {
     /// Creates shell's profile description
     /// * `shell` - path to shell's executable file
     /// * `args` - list of arguments needed to pass a command into shell. For example: "-c"
-    /// to have a full command like: "/etc/bin/bash -c cmd"
+    ///    to have a full command like: "/etc/bin/bash -c cmd"
     /// * `name` - optional name for profile. For unix based systems it will be name of
-    /// executable file, like "bash", "fish" etc. For windows better to provide name to
-    /// have it like "GitBash", "PowerShell" etc.
+    ///    executable file, like "bash", "fish" etc. For windows better to provide name to
+    ///    have it like "GitBash", "PowerShell" etc.
     pub fn new(shell: &PathBuf, args: Vec<&str>, name: Option<&str>) -> Result<Self, Error> {
         let path = Path::new(shell);
         if !path.exists() {
